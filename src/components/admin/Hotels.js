@@ -4,6 +4,7 @@ import { BASE_URL, headers } from "../../constants/api";
 
 function Hotels() {
     const [hotels, setHotels] = useState([]);
+    const [error, setError] = useState(null);
 
     const url = BASE_URL + "establishments";
 
@@ -14,7 +15,13 @@ function Hotels() {
             .then((response) => response.json())
             .then((json) => {
                 console.log(json);
-                setHotels(json);
+                // handle error
+                if (json.error) {
+                    setHotels([]);
+                    setError(json.message);
+                } else {
+                    setHotels(json);
+                }
             })
             .catch((error) => console.log(error));
     }, []);
@@ -22,6 +29,7 @@ function Hotels() {
     return (
         <>
             <h1>Hotels</h1>
+            {error && <div className="error">{error}</div>}
             <ul>
                 {hotels.map((hotel) => {
                     return (
